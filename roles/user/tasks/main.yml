@@ -1,0 +1,19 @@
+- name: Add deploy user
+  user:
+    name: deploy
+    shell: /bin/bash
+    create_home: yes
+
+- name: Add SSH key for deploy user
+  authorized_key:
+    user: deploy
+    key: "{{ lookup('file', 'files/dev_id_rsa.pub') }}"
+    state: present
+    manage_dir: yes
+
+- name: Set permissions for .ssh directory
+  file:
+    path: /home/deploy/.ssh
+    owner: deploy
+    group: deploy
+    mode: 0700

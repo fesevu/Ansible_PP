@@ -8,6 +8,20 @@
     state: absent
     remove: yes
 
+- name: Ensure dpkg is configured and not broken
+  shell: dpkg --configure -a
+  changed_when: false
+
+- name: Clean APT cache
+  apt:
+    autoclean: yes
+    autoremove: no
+  changed_when: false
+
+- name: Update APT cache
+  apt:
+    update_cache: yes  
+
 - name: Install required packages
   apt:
     name: "{{ common_packages }}"

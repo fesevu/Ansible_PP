@@ -1,27 +1,40 @@
 - name: Ensure /home/developer directory exists
-  file:
+  ansible.builtin.file:
     path: /home/developer
     state: directory
     mode: '0755'
 
 - name: Download Python 3.9.6
-  get_url:
+  ansible.builtin.get_url:
     url: https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
-    dest: /home/developer/
+    dest: /home/developer/Python-3.9.6.tgz
+    mode: '0644'
 
 - name: Extract Python
-  unarchive:
+  ansible.builtin.unarchive:
     src: /home/developer/Python-3.9.6.tgz
     dest: /home/developer/
-    remote_src: yes
+    remote_src: true
 
 - name: Build and install Python
-  shell: |
+  ansible.builtin.shell: |
     cd /home/developer/Python-3.9.6 && ./configure --prefix=/opt/python3 && make && make install
   args:
     creates: /opt/python3/bin/python3.9
 
+- name: Upgrade pip
+  ansible.builtin.command:
+    cmd: /opt/python3/bin/pip3.9 install --upgrade pip
+  args:
+    creates: /opt/python3/bin/pip3.9
+
 - name: Install pip packages
-  shell: |
-    /opt/python3/bin/pip3.9 install --upgrade pip && \
-    /opt/python3/bin/pip3.9 install pycurl mysqlclient mysql.connector certifi redis sentry-sdk
+  ansible.builtin.pip:
+    executable: /opt/python3/bin/pip3.9
+    name:
+      - pycurl
+      - mysqlclient
+      - mysql-connector-python
+      - certifi
+      - redis
+      - sentry-sdk

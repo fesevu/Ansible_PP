@@ -1,11 +1,11 @@
 - name: Server Setup
   hosts: server
-  become: yes
+  become: true
   roles:
     - common
     - system
     - python
     - user
-    # - mysql
+    - mysql
     # - composer
     # - nginx

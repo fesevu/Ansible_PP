@@ -1,19 +1,19 @@
 - name: Add deploy user
-  user:
+  ansible.builtin.user:
     name: deploy
     shell: /bin/bash
-    create_home: yes
+    create_home: true
 
 - name: Add SSH key for deploy user
   authorized_key:
     user: deploy
     key: "{{ lookup('file', 'files/dev_id_rsa.pub') }}"
     state: present
-    manage_dir: yes
+    manage_dir: true
 
 - name: Set permissions for .ssh directory
-  file:
+  ansible.builtin.file:
     path: /home/deploy/.ssh
     owner: deploy
     group: deploy
-    mode: 0700
+    mode: "0700"

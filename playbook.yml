@@ -6,6 +6,6 @@
     - system
     - python
     - user
-    - mysql
-    # - composer
+    # - mysql
+    - composer
     # - nginx

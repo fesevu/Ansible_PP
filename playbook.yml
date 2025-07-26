@@ -8,4 +8,13 @@
     - user
     # - mysql
     - composer
-    # - nginx
+    - nginx
+
+- name: Restart server
+  hosts: server
+  become: true
+  tasks:
+    - name: Reboot server
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible after provisioning"
+        reboot_timeout: 600

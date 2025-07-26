@@ -1,0 +1,22 @@
+- name: Install nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    update_cache: true
+
+- name: Copy nginx.conf
+  ansible.builtin.copy:
+    content: "{{ lookup('file', 'files/nginx.conf_') }}"
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: "0644"
+    backup: true
+
+- name: Logs rotation
+  ansible.builtin.template:
+    src: nginx_logrotate.j2
+    dest: /etc/logrotate.d/nginx
+    owner: root
+    group: root
+    mode: "0644"

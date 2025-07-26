@@ -1,0 +1,26 @@
+- name: Apply sysctl parameters
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    reload: yes
+  with_dict: "{{ sysctl_params }}"
+
+- name: Deploy updated /etc/security/limits.conf
+  template:
+    src: limits.conf.j2
+    dest: /etc/security/limits.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Deploy updated /etc/systemd/system.conf
+  template:
+    src: system.conf.j2
+    dest: /etc/systemd/system.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Reload systemd to apply new system.conf
+  command: systemctl daemon-reexec

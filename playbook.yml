@@ -5,7 +5,7 @@
     - group_vars/all.yml
   roles:
     - common
-    # - system
+    - system
     - python
     - user
     # - mysql

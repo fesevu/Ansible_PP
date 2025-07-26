@@ -1,0 +1,4 @@
+sysctl_params:
+  net.ipv4.ip_local_port_range: "1024 65535"
+  fs.nr_open: 2000000
+  fs.file-max: 5000000

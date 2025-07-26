@@ -5,9 +5,9 @@
     - group_vars/all.yml
   roles:
     - common
+    # - system
+    - python
     - user
-    # - python
     # - mysql
     # - composer
     # - nginx
-    # - config

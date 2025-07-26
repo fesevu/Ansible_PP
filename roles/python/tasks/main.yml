@@ -1,0 +1,27 @@
+- name: Ensure /home/developer directory exists
+  file:
+    path: /home/developer
+    state: directory
+    mode: '0755'
+
+- name: Download Python 3.9.6
+  get_url:
+    url: https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
+    dest: /home/developer/
+
+- name: Extract Python
+  unarchive:
+    src: /home/developer/Python-3.9.6.tgz
+    dest: /home/developer/
+    remote_src: yes
+
+- name: Build and install Python
+  shell: |
+    cd /home/developer/Python-3.9.6 && ./configure --prefix=/opt/python3 && make && make install
+  args:
+    creates: /opt/python3/bin/python3.9
+
+- name: Install pip packages
+  shell: |
+    /opt/python3/bin/pip3.9 install --upgrade pip && \
+    /opt/python3/bin/pip3.9 install pycurl mysqlclient mysql.connector certifi redis sentry-sdk

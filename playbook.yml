@@ -1,0 +1,13 @@
+- name: Server Setup
+  hosts: server
+  become: yes
+  vars_files:
+    - group_vars/all.yml
+  roles:
+    - common
+    # - user
+    # - python
+    # - mysql
+    # - composer
+    # - nginx
+    # - config

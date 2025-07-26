@@ -1,0 +1,15 @@
+- name: Set timezone to UTC
+  timezone:
+    name: Etc/UTC
+
+- name: Remove default user debian
+  user:
+    name: debian
+    state: absent
+    remove: yes
+
+- name: Install required packages
+  apt:
+    name: "{{ common_packages }}"
+    state: present
+    update_cache: yes

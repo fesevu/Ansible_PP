@@ -1,3 +1,14 @@
+- name: Remove MariaDB packages if present
+  ansible.builtin.apt:
+    name:
+      - libmariadb-dev
+      - libmariadb3
+      - mariadb-common
+    state: absent
+    purge: true
+    autoremove: true
+  ignore_errors: true
+
 - name: Ensure dependencies are installed
   ansible.builtin.apt:
     name:

@@ -1,41 +1,41 @@
-- name: Download MySQL apt repo
+- name: Ensure dependencies are installed
+  ansible.builtin.apt:
+    name:
+      - gnupg
+      - lsb-release
+      - wget
+    state: present
+    update_cache: true
+
+- name: Download Percona release package
   ansible.builtin.get_url:
-    url: https://repo.mysql.com/mysql-apt-config_0.8.34-1_all.deb
-    dest: /tmp/mysql.deb
+    url: https://repo.percona.com/apt/percona-release_latest.bullseye_all.deb
+    dest: /tmp/percona-release.deb
     mode: '0644'
 
-- name: Ensure debconf-utils is installed
+- name: Install Percona release package
   ansible.builtin.apt:
-    name: debconf-utils
-    state: present
-    update_cache: true
+    deb: /tmp/percona-release.deb
 
-- name: Preseed MySQL 5.7 selection
-  ansible.builtin.shell: |
-    echo "mysql-apt-config mysql-apt-config/select-server select mysql-5.7" | debconf-set-selections
+- name: Enable Percona Server
+  ansible.builtin.command: percona-release enable ps-57 release
   args:
-    executable: /bin/bash
+    creates: /etc/apt/sources.list.d/percona-ps-57.list
 
-- name: Install MySQL apt repo package
-  ansible.builtin.shell: |
-    dpkg -i /tmp/mysql.deb
-  args:
-    executable: /bin/bash
-  register: dpkg_output
-  failed_when: "'error' in dpkg_output.stderr.lower()"
-
-- name: Update apt cache after adding MySQL repo
+- name: Update APT cache after enabling Percona repo
   ansible.builtin.apt:
     update_cache: true
 
-- name: Preseed MySQL root password
+- name: Preseed Percona root password
   ansible.builtin.shell: |
-    echo "mysql-server mysql-server/root_password password {{ mysql_root_password }}" | debconf-set-selections
-    echo "mysql-server mysql-server/root_password_again password {{ mysql_root_password }}" | debconf-set-selections
+    echo "percona-server-server-5.7 percona-server-server/root_password password {{ mysql_root_password }}" | debconf-set-selections
+    echo "percona-server-server-5.7 percona-server-server/root_password_again password {{ mysql_root_password }}" | debconf-set-selections
   args:
     executable: /bin/bash
 
-- name: Install MySQL Server
+- name: Install Percona Server
   ansible.builtin.apt:
-    name: mysql-server
+    name: percona-server-server-5.7
     state: present
+  environment:
+    DEBIAN_FRONTEND: noninteractive

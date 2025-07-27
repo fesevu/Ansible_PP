@@ -13,3 +13,9 @@
     name: "{{ common_packages }}"
     state: present
     update_cache: true
+  register: install_result
+
+- name: Show installed packages
+  ansible.builtin.debug:
+    msg: "Successfully installed packages: {{ install_result.packages if install_result.packages is defined else common_packages }}"
+  when: install_result is succeeded

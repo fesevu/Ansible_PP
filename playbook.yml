@@ -2,11 +2,11 @@
   hosts: server
   become: true
   roles:
+    - mysql
     - common
     - system
     - python
     - user
-    - mysql
     - composer
     - nginx
 

@@ -44,9 +44,31 @@
   args:
     executable: /bin/bash
 
-- name: Install Percona Server
+- name: Install Percona Server for MySQL 5.7
   ansible.builtin.apt:
-    name: percona-server-server-5.7
+    name:
+      - percona-server-server-5.7
+      - percona-server-client-5.7
+      - percona-server-common-5.7
     state: present
   environment:
     DEBIAN_FRONTEND: noninteractive
+
+- name: Ensure MySQL service is started
+  ansible.builtin.service:
+    name: mysql
+    state: started
+    enabled: true
+
+- name: Verify MySQL root password works
+  ansible.builtin.shell: |
+    mysql -uroot -p{{ mysql_root_password }} -e "SELECT VERSION();"
+  register: mysql_check
+  failed_when: "'ERROR' in mysql_check.stderr"
+  changed_when: false    
+
+- name: Print MySQL version query result
+  ansible.builtin.debug:
+    msg: "{{ mysql_check.stdout }}"
+
+
